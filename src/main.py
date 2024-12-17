@@ -1,5 +1,8 @@
+import Sensor.Bme280Wrapper as bme280_wrapper;
+
 def main():
-    print("Hello, World!")
+    sensor = bme280_wrapper(0x77)
+    sensor.start_driver()
 
 if __name__ == "__main__":
     main()
