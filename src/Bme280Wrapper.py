@@ -14,24 +14,23 @@ import bme280
 
 class Bme280Wrapper:
 
-    def __init__(self):
+    def __init__(self, sensor_address: int):
+        self.sensor_address = sensor_address
         return
 
-    def start_driver(self, sensor_address: int, ):
+    def start_driver(self ):
         """
         Calibrates sensor and starts reading until exception occurs or keyboard interrupt happens
         """
-
-        address = sensor_address
         bus = smbus2.SMBus(1)
 
         # Load calibration parameters
-        calibration_params = bme280.load_calibration_params(bus, address)
+        calibration_params = bme280.load_calibration_params(bus, self.sensor_address)
 
         while True:
             try:
                 # Read sensor data
-                data = bme280.sample(bus, address, calibration_params)
+                data = bme280.sample(bus, self.sensor_address, calibration_params)
 
                 # Extract temperature, pressure, and humidity
                 temperature_celsius = data.temperature
