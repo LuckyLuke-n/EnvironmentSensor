@@ -1,22 +1,22 @@
 import time
-import sys
-import os
-
-if sys.platform.startswith('linux') or sys.platform == 'darwin':
-    import fcntl
-else:
-    print("fcntl is not available on this platform.")
-    print("application will shut down.")
-    os._exit(0)
-
+# import fcntl
 import smbus2
 import bme280
+from SensorData import SensorData
+from datetime import datetime
 
 class Bme280Wrapper:
 
     def __init__(self, sensor_address: int):
         self.sensor_address = sensor_address
-        return
+        self._stopping_token_thrown = False
+        self._observers = []
+    
+    def attach(self, observer):
+        self._observers.append(observer)
+
+    def detach(self, observer):
+        self._observers.remove(observer)
 
     def start_driver(self ):
         """
@@ -27,7 +27,7 @@ class Bme280Wrapper:
         # Load calibration parameters
         calibration_params = bme280.load_calibration_params(bus, self.sensor_address)
 
-        while True:
+        while not self.stopping_token_thrown:
             try:
                 # Read sensor data
                 data = bme280.sample(bus, self.sensor_address, calibration_params)
@@ -42,12 +42,18 @@ class Bme280Wrapper:
                 print("Pressure: {:.2f} hPa".format(pressure))
                 print("Humidity: {:.2f} %".format(humidity))
 
+                for observer in self._observers:
+                    observer.update(SensorData( timestamp=datetime.now(), temperature=data.temperature, pressure=data.pressure, humidity=data.humidity ))
+
                 # Wait for a few seconds before the next reading
                 time.sleep(2)
 
-            except KeyboardInterrupt:
-                print('Program stopped')
-                break
             except Exception as e:
                 print('An unexpected error occurred:', str(e))
                 break
+
+    def stop_driver(self):
+        """
+        Stops the driver. Data from the sensor is no longer processed.
+        """
+        self._stopping_token_thrown = True
