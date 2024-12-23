@@ -30,12 +30,7 @@ class MqttPublisher:
         self.client.user_data_set(self.unacked_publish)
         self.client.username_pw_set(username, password)
         self.client.on_connect = on_connect
-        code = self.client.connect(self.broker, self.port)
-
-        if self.client.is_connected():
-            print("Conn")
-        else:
-            print(code)
+        self.client.connect(self.broker, self.port)
 
         self.client.loop_start()
     
