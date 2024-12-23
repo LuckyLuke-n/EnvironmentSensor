@@ -1,11 +1,8 @@
 import time
-# import fcntl
-import smbus2
-import bme280
-from SensorData import SensorData
 from datetime import datetime
+from SensorData import SensorData
 
-class Bme280Wrapper:
+class Bme280Mock:
 
     def __init__(self, sensor_address: int):
         self.sensor_address = sensor_address
@@ -22,19 +19,13 @@ class Bme280Wrapper:
         """
         Calibrates sensor and starts reading until exception occurs or keyboard interrupt happens
         """
-        bus = smbus2.SMBus(1)
-        # Load calibration parameters
-        calibration_params = bme280.load_calibration_params(bus, self.sensor_address)
 
         while not self._stopping_token_thrown:
             try:
-                # Read sensor data
-                data = bme280.sample(bus, self.sensor_address, calibration_params)
-
                 # Extract temperature, pressure, and humidity
-                temperature_celsius = data.temperature
-                pressure = data.pressure
-                humidity = data.humidity
+                temperature_celsius = 22.5
+                pressure = 1000
+                humidity = 44.14
 
                 # Print the readings
                 print("Temperature: {:.2f} °C".format(temperature_celsius))
@@ -42,7 +33,7 @@ class Bme280Wrapper:
                 print("Humidity: {:.2f} %".format(humidity))
 
                 for observer in self._observers:
-                    observer.update(SensorData( timestamp=datetime.now(), temperature=data.temperature, pressure=data.pressure, humidity=data.humidity ))
+                    observer.update(SensorData( datetime.now(), temperature_celsius, pressure, humidity ))
 
                 # Wait for a few seconds before the next reading
                 time.sleep(2)

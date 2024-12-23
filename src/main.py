@@ -1,23 +1,39 @@
-from Bme280Wrapper import Bme280Wrapper
 import os
+import socket
+import json
+import uuid
+import pickle
 from SensorData import SensorData
 from MqttPublisher import MqttPublisher
-import socket
+from pathlib import Path
 
-MQTT_HOST = os.environ["ES_MQTT_HOST"]
-MQTT_PORT = 8883
-MQTT_USER = os.environ["ES_MQTT_USER"]
-MQTT_PASSWORD = os.environ["ES_MQTT_PASSWORD"]
+with open( os.path.join(Path(__file__).resolve().parent, "launch_settings", "env.json"), 'r') as file:
+    environment = json.load(file)
+
+IS_MOCKED = bool(environment["mqtt_host"])
+MQTT_HOST = environment["mqtt_host"]
+MQTT_PORT = int(environment["mqtt_port"])
+MQTT_USER = environment["mqtt_user"]
+MQTT_PASSWORD = environment["mqtt_password"]
 MQTT_TOPIC = "environmentsensor/" + socket.gethostname()
 SENSOR_ADDRESS = 0x77
+
+if IS_MOCKED:
+    from Bme280Mock import Bme280Mock
+else:
+    from Bme280Wrapper import Bme280Wrapper
 
 def main():
 
     observer = Observer()
     try:
-        sensor = Bme280Wrapper(SENSOR_ADDRESS)
-        sensor.start_driver()
+        if IS_MOCKED:
+            sensor = Bme280Mock(SENSOR_ADDRESS)
+        else:
+            sensor = Bme280Wrapper(SENSOR_ADDRESS)
+
         sensor.attach(observer)
+        sensor.start_driver()
     except KeyboardInterrupt:
         print('Program stopped')
         sensor.detach(observer)
@@ -27,11 +43,14 @@ def main():
 class Observer:
 
     def __init__(self):
+        client_id = socket.gethostname() + "-"  + str(uuid.uuid4())
         self._publisher = MqttPublisher(MQTT_HOST, MQTT_PORT, MQTT_TOPIC )
-        self._publisher.connect(MQTT_USER, MQTT_PASSWORD)
+        self._publisher.connect(client_id, MQTT_USER, MQTT_PASSWORD)
 
     def update(self, data: SensorData):
-        self._publisher.publish( data )
+        byte_stream = pickle.dumps(data)
+        byte_array = bytearray(byte_stream)
+        self._publisher.publish( byte_array )
         print(f"Observer received: {data.temperature}")      
 
     def dispose(self):
