@@ -12,7 +12,7 @@ from pathlib import Path
 with open( os.path.join(Path(__file__).resolve().parent, "launch_settings", "env.json"), 'r') as file:
     environment = json.load(file)
 
-IS_MOCKED = bool(environment["mqtt_host"])
+IS_MOCKED = environment["is_mocked"]
 MQTT_HOST = environment["mqtt_host"]
 MQTT_PORT = int(environment["mqtt_port"])
 MQTT_USER = environment["mqtt_user"]
@@ -20,16 +20,18 @@ MQTT_PASSWORD = environment["mqtt_password"]
 MQTT_TOPIC = "environmentsensor/" + socket.gethostname()
 SENSOR_ADDRESS = 0x77
 
-if IS_MOCKED:
+if IS_MOCKED == "True":
+    print("Starting mock")
     from Bme280Mock import Bme280Mock
 else:
+    print("Starting real sensor")
     from Bme280Wrapper import Bme280Wrapper
 
 def main():
 
     observer = Observer()
     try:
-        if IS_MOCKED:
+        if IS_MOCKED == "True":
             sensor = Bme280Mock(SENSOR_ADDRESS)
         else:
             sensor = Bme280Wrapper(SENSOR_ADDRESS)
@@ -52,8 +54,7 @@ class Observer:
     def update(self, data: SensorData):
         byte_stream = pickle.dumps(data)
         byte_array = bytearray(byte_stream)
-        self._publisher.publish( byte_array )
-        print(f"Observer received: {data.temperature}")      
+        self._publisher.publish( byte_array ) 
 
     def dispose(self):
         self._publisher.disconnect()       
