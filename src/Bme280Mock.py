@@ -28,9 +28,10 @@ class Bme280Mock:
                 humidity = 44.14
 
                 # Print the readings
-                print("Temperature: {:.2f} °C".format(temperature_celsius))
-                print("Pressure: {:.2f} hPa".format(pressure))
-                print("Humidity: {:.2f} %".format(humidity))
+                # print("Temperature: {:.2f} °C".format(temperature_celsius))
+                # print("Pressure: {:.2f} hPa".format(pressure))
+                # print("Humidity: {:.2f} %".format(humidity))
+                print( str(datetime.now()) + ": running...")
 
                 for observer in self._observers:
                     observer.update(SensorData( datetime.now(), temperature_celsius, pressure, humidity ))
