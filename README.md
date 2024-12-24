@@ -7,11 +7,11 @@ chmod +x envsensor.py
 ```
 Run it with nohup to prevent stopping when terminal is exited. The ```&``` means it will run in the background.
 ```
-nohup envsensor.py &
+nohup python3 envsensor.py &
 ```
 You can find the process and its process ID with this command:
 ```
-ps ax | grep envsensor.py
+ps -fA | grep python
 ```
 
 To terminate the script run
