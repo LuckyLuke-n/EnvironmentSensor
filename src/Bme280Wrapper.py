@@ -40,7 +40,6 @@ class Bme280Wrapper:
                 # print("Temperature: {:.2f} °C".format(temperature_celsius))
                 # print("Pressure: {:.2f} hPa".format(pressure))
                 # print("Humidity: {:.2f} %".format(humidity))
-                print( str(datetime.now())  + ": running...")
 
                 for observer in self._observers:
                     observer.update(SensorData( timestamp=datetime.now(), temperature=data.temperature, pressure=data.pressure, humidity=data.humidity ))
