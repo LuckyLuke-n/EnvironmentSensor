@@ -1,6 +1,4 @@
 from paho.mqtt import client as mqtt_client
-import SensorData
-from SensorData import SensorData
 
 FIRST_RECONNECT_DELAY = 1
 RECONNECT_RATE = 2
@@ -34,7 +32,7 @@ class MqttPublisher:
 
         self.client.loop_start()
     
-    def publish(self, payload: SensorData):
+    def publish(self, payload: str):
         result = self.client.publish(self.topic, payload)
         self.unacked_publish.add(result.mid)
         status = result[0] # result: [0, 1]

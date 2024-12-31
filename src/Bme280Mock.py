@@ -1,6 +1,5 @@
 import time
 from datetime import datetime
-from SensorData import SensorData
 
 class Bme280Mock:
 
@@ -33,7 +32,13 @@ class Bme280Mock:
                 # print("Humidity: {:.2f} %".format(humidity))
 
                 for observer in self._observers:
-                    observer.update(SensorData( datetime.now(), temperature_celsius, pressure, humidity ))
+                    data = {
+                        "timestamp": str(datetime.utcnow()),
+                        "temperature": temperature_celsius,
+                        "pressure": pressure,
+                        "humidity": humidity
+                    }
+                    observer.update(data)
 
                 # Wait for a few seconds before the next reading
                 time.sleep(2)

@@ -2,7 +2,6 @@ import time
 # import fcntl
 import smbus2
 import bme280
-from SensorData import SensorData
 from datetime import datetime
 
 class Bme280Wrapper:
@@ -42,7 +41,13 @@ class Bme280Wrapper:
                 # print("Humidity: {:.2f} %".format(humidity))
 
                 for observer in self._observers:
-                    observer.update(SensorData( timestamp=datetime.now(), temperature=data.temperature, pressure=data.pressure, humidity=data.humidity ))
+                    data = {
+                        "timestamp": str(datetime.utcnow()),
+                        "temperature": temperature_celsius,
+                        "pressure": pressure,
+                        "humidity": humidity
+                    }
+                    observer.update(data)
 
                 # Wait for a few seconds before the next reading
                 time.sleep(2)
