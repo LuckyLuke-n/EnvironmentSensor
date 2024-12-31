@@ -18,7 +18,7 @@ MQTT_PORT = int(environment["mqtt_port"])
 MQTT_USER = environment["mqtt_user"]
 MQTT_PASSWORD = environment["mqtt_password"]
 MQTT_TOPIC = socket.gethostname().lower() + "/environmentsensor"
-SENSOR_ADDRESS = environment["sensor_address"]
+SENSOR_ADDRESS = int(environment["sensor_address"], 16)
 
 if IS_MOCKED == "True":
     print("Starting mock")
