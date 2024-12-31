@@ -4,8 +4,6 @@ import os
 import socket
 import json
 import uuid
-import pickle
-from SensorData import SensorData
 from MqttPublisher import MqttPublisher
 from pathlib import Path
 
@@ -51,10 +49,9 @@ class Observer:
         self._publisher = MqttPublisher(MQTT_HOST, MQTT_PORT, MQTT_TOPIC )
         self._publisher.connect(client_id, MQTT_USER, MQTT_PASSWORD)
 
-    def update(self, data: SensorData):
-        byte_stream = pickle.dumps(data)
-        byte_array = bytearray(byte_stream)
-        self._publisher.publish( byte_array ) 
+    def update(self, data: dict):
+        json_string = json.dumps(data, indent=4)
+        self._publisher.publish( json_string ) 
 
     def dispose(self):
         self._publisher.disconnect()       
