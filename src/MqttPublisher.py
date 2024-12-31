@@ -41,7 +41,7 @@ class MqttPublisher:
         if status == 1:
             print(f"Failed to send message to topic {self.topic}")
         elif status == 4:
-            print(f"No connection to broker to publish to topic {self.topic}")
+            print(f"No connection to broker to publish to topic {self.topic}. Check credentials.")
 
     def disconnect(self):
         self._graceful_disconnect = True
