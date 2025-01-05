@@ -22,9 +22,9 @@ class Bme280Mock:
         while not self._stopping_token_thrown:
             try:
                 # Extract temperature, pressure, and humidity
-                temperature_celsius = 22.5
-                pressure = 1000
-                humidity = 44.14
+                temperature_celsius = 22.55321
+                pressure = 1000.927212
+                humidity = 44.14234235
 
                 # Print the readings
                 # print("Temperature: {:.2f} °C".format(temperature_celsius))
@@ -34,9 +34,9 @@ class Bme280Mock:
                 for observer in self._observers:
                     data = {
                         "timestamp": str(datetime.utcnow()),
-                        "temperature": temperature_celsius,
-                        "pressure": pressure,
-                        "humidity": humidity
+                        "temperature": round(temperature_celsius, 2),
+                        "pressure": round(pressure, 2),
+                        "humidity": round(humidity, 2)
                     }
                     observer.update(data)
 
