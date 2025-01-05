@@ -50,7 +50,7 @@ class Bme280Wrapper:
                     observer.update(data)
 
                 # Wait for a few seconds before the next reading
-                time.sleep(2)
+                time.sleep(30)
 
             except Exception as e:
                 print('An unexpected error occurred:', str(e))
