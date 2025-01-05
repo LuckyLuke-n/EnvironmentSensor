@@ -43,14 +43,14 @@ class Bme280Wrapper:
                 for observer in self._observers:
                     data = {
                         "timestamp": str(datetime.utcnow()),
-                        "temperature": temperature_celsius,
-                        "pressure": pressure,
-                        "humidity": humidity
+                        "temperature": round(temperature_celsius, 2),
+                        "pressure": round(pressure, 2),
+                        "humidity": round(humidity, 2)
                     }
                     observer.update(data)
 
                 # Wait for a few seconds before the next reading
-                time.sleep(2)
+                time.sleep(30)
 
             except Exception as e:
                 print('An unexpected error occurred:', str(e))
