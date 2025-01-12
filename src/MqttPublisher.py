@@ -22,11 +22,11 @@ class MqttPublisher:
             print("Connected with result code " + str(rc) + "\n" )
 
         # Set Connecting Client ID
-        self.client = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION2)
         # For paho-mqtt 2.0.0, you need to set callback_api_version.
         self.client = mqtt_client.Client()
         self.client.user_data_set(self.unacked_publish)
         self.client.username_pw_set(username, password)
+        self.client.tls_set()
         self.client.on_connect = on_connect
         self.client.connect(self.broker, self.port)
 
