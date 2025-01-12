@@ -26,7 +26,7 @@ class MqttPublisher:
         self.client = mqtt_client.Client()
         self.client.user_data_set(self.unacked_publish)
         self.client.username_pw_set(username, password)
-        self.client.tls_set()
+        # self.client.tls_set()
         self.client.on_connect = on_connect
         self.client.connect(self.broker, self.port)
 
