@@ -11,7 +11,7 @@ This Python script reads temperature and humidity data from a BME280 sensor. The
 - RPi.bme280 library for interfacing with the BME280 sensor
 
 ## License
-This project is licensed under the MIT License. See the [LICENSE](/License.md) file for details.
+This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
 
 ## Acknowledgments
 Thanks to the developers of the BME280 sensor for providing accurate environmental data.
