@@ -50,7 +50,19 @@ and see something like that
 60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 70: -- -- -- -- -- -- -- 77
 ```
+
+#### Set environment for script
 That is the number you will put in the launch_settings/env.json for sensor address. In that case it is 0x77.
+```
+{
+    "is_mocked": "False",
+    "mqtt_host": "host",
+    "mqtt_port": "1883",
+    "mqtt_user": "user",
+    "mqtt_password": "secret",
+    "sensor_address": "0x77"
+}
+```
 
 ## Acknowledgments
 Thanks to the developers of the BME280 sensor for providing accurate environmental data.
