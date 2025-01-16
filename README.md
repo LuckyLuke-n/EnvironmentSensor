@@ -7,5 +7,5 @@ This Python script reads temperature and humidity data from a BME280 sensor. The
 
 ## Requirements
 - Python 3.x
-- smbus library for I2C communication
-- bme280 library for interfacing with the BME280 sensor
+- smbus2 library for I2C communication
+- py.bme280 library for interfacing with the BME280 sensor
