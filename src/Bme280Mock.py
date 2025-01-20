@@ -41,7 +41,7 @@ class Bme280Mock:
                     observer.update(data)
 
                 # Wait for a few seconds before the next reading
-                time.sleep(10)
+                time.sleep(5)
 
             except Exception as e:
                 print('An unexpected error occurred:', str(e))
