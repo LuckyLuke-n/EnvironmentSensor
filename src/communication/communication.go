@@ -1,10 +1,10 @@
-package mqttHandler
+package communication
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/google/uuid"
@@ -24,6 +24,32 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 
 var machineName string = ""
 
+type MqttConfig struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+	UseTls   bool
+}
+
+func LoadConfigFromEnv() MqttConfig {
+	var host = os.Getenv("ENVSENSOR_MQTT_HOST")
+	var username = os.Getenv("ENVSENSOR_MQTT_USERNAME")
+	var password = os.Getenv("ENVSENSOR_MQTT_PASSWORD")
+
+	port, err := strconv.Atoi(os.Getenv("ENVSENSOR_MQTT_PORT"))
+	if err != nil {
+		fmt.Println("Error parsing string to int:", err)
+	}
+
+	useTls, err := strconv.ParseBool(os.Getenv("ENVSENSOR_MQTT_USETLS"))
+	if err != nil {
+		fmt.Println("Error parsing string to bool:", err)
+	}
+
+	return MqttConfig{host, port, username, password, useTls}
+}
+
 type MqttHandler struct {
 	Host     string
 	Port     int
@@ -34,15 +60,9 @@ type MqttHandler struct {
 	Client   mqtt.Client
 }
 
-type SensorData struct {
-	Temperature     float32
-	Humidity        float32
-	AmbientPressure float32
-}
-
 func NewClient(host string, port int, username string, password string, useTls bool) (*MqttHandler, error) {
 	if host == "" || username == "" || password == "" {
-		return nil, errors.New("Host, username and password cannot be empty")
+		return nil, errors.New("host, username and password cannot be empty")
 	}
 
 	machineName, err := os.Hostname()
@@ -56,7 +76,7 @@ func NewClient(host string, port int, username string, password string, useTls b
 
 func (c *MqttHandler) connect() {
 	opts := mqtt.NewClientOptions()
-	opts.AddBroker("tcp://" + c.Host + ":" + string(c.Port))
+	opts.AddBroker("tcp://" + c.Host + ":" + strconv.Itoa(c.Port))
 	opts.SetClientID(machineName + uuid.New().String())
 	opts.SetUsername(c.Username)
 	opts.SetPassword(c.Password)
@@ -69,12 +89,6 @@ func (c *MqttHandler) connect() {
 	}
 }
 
-func (c *MqttHandler) publish(data SensorData) {
-	payload, err := json.Marshal(data)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-	}
-
+func (c *MqttHandler) Publish(payload string) {
 	c.Client.Publish(c.Topic, 0, false, payload)
 }
