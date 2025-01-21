@@ -7,15 +7,18 @@ import (
 	"strings"
 )
 
+var appName string = "Environment Sensor"
+var appVersion string = "1.0.0"
+
 var mqttHandler communication.MqttHandler
 
 func main() {
 
 	var builder strings.Builder
 	builder.WriteString("Welcome to ")
-	builder.WriteString(AppName)
+	builder.WriteString(appName)
 	builder.WriteString(" ")
-	builder.WriteString(AppVersion)
+	builder.WriteString(appVersion)
 	builder.WriteString("\n")
 
 	fmt.Println(builder.String())
@@ -29,6 +32,7 @@ func main() {
 		fmt.Println("cannot connect to message bus", err)
 	}
 	mqttHandler = *mqttClient
+	mqttHandler.Connect()
 
 	// start sensor
 	fmt.Println("Starting the sensor...")

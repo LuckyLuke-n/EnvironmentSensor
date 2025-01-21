@@ -3,6 +3,7 @@ package sensor
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,9 +11,9 @@ import (
 )
 
 type SensorData struct {
-	Temperature     float32
-	Humidity        float32
-	AmbientPressure float32
+	Temperature     float32 `json:"temperature"`
+	Humidity        float32 `json:"humidity"`
+	AmbientPressure float32 `json:"pressure"`
 }
 
 func NewSensorData(temperature float32, humidity float32, ambientPressure float32) *SensorData {
@@ -31,6 +32,10 @@ func (s *SensorData) JsonString() string {
 }
 
 type Subscriber func(SensorData)
+
+func roundToTwoDecimalPlaces(value float32) float32 {
+	return float32(math.Round(float64(value*100)) / 100)
+}
 
 type Sensor interface {
 	Start()
@@ -72,9 +77,9 @@ func (m *SensorMock) Start() {
 			return
 		default:
 			data := SensorData{}
-			data.Temperature = 21.41
-			data.Humidity = 47
-			data.AmbientPressure = 980.411
+			data.Temperature = roundToTwoDecimalPlaces(21.4661)
+			data.Humidity = roundToTwoDecimalPlaces(44)
+			data.AmbientPressure = roundToTwoDecimalPlaces(980.411)
 
 			m.Notify(data)
 

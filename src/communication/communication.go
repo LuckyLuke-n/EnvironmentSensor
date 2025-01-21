@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/google/uuid"
@@ -15,7 +16,7 @@ var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 }
 
 var connectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
-	fmt.Println("Connected")
+	fmt.Println("...connected message bus!")
 }
 
 var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
@@ -65,16 +66,17 @@ func NewClient(host string, port int, username string, password string, useTls b
 		return nil, errors.New("host, username and password cannot be empty")
 	}
 
-	machineName, err := os.Hostname()
+	var err error
+	machineName, err = os.Hostname()
 
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
 
-	return &MqttHandler{Host: host, Port: port, Username: username, Password: password, Topic: machineName + "/temperaturesensor", UseTls: useTls}, nil
+	return &MqttHandler{Host: host, Port: port, Username: username, Password: password, Topic: strings.ToLower(machineName) + "/environmentsensor", UseTls: useTls}, nil
 }
 
-func (c *MqttHandler) connect() {
+func (c *MqttHandler) Connect() {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker("tcp://" + c.Host + ":" + strconv.Itoa(c.Port))
 	opts.SetClientID(machineName + uuid.New().String())
