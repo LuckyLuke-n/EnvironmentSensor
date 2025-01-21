@@ -1,6 +1,7 @@
 package communication
 
 import (
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"os"
@@ -76,16 +77,24 @@ func NewClient(host string, port int, username string, password string, useTls b
 	return &MqttHandler{Host: host, Port: port, Username: username, Password: password, Topic: strings.ToLower(machineName) + "/environmentsensor", UseTls: useTls}, nil
 }
 
-func (c *MqttHandler) Connect() {
+func (c *MqttHandler) Connect(useTls bool) {
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker("tcp://" + c.Host + ":" + strconv.Itoa(c.Port))
 	opts.SetClientID(machineName + uuid.New().String())
 	opts.SetUsername(c.Username)
 	opts.SetPassword(c.Password)
-	// opts.SetDefaultPublishHandler(messagePubHandler)
+
+	if useTls {
+		tlsConfig := &tls.Config{
+			InsecureSkipVerify: false,
+		}
+		opts.SetTLSConfig(tlsConfig)
+	}
+
 	opts.OnConnect = connectHandler
 	opts.OnConnectionLost = connectLostHandler
 	c.Client = mqtt.NewClient(opts)
+
 	if token := c.Client.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}

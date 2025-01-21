@@ -32,7 +32,7 @@ func main() {
 		fmt.Println("cannot connect to message bus", err)
 	}
 	mqttHandler = *mqttClient
-	mqttHandler.Connect()
+	mqttHandler.Connect(mqttConfig.UseTls)
 
 	// start sensor
 	fmt.Println("Starting the sensor...")
