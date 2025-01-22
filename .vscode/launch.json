@@ -17,7 +17,7 @@
                 "ENVSENSOR_MQTT_PASSWORD": "public",
                 "ENVSENSOR_MQTT_USETLS": "false",
                 "ENVSENSOR_BME280_ADDRESS": "0x77",
-                "USE_MOCK": "true"
+                "USE_MOCK": "false"
             },
             "args": []
         }

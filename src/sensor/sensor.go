@@ -1,6 +1,7 @@
 package sensor
 
 import (
+	"EnvironmentSensor/hardware/smbus"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,8 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/d2r2/bme280"
-	"github.com/d2r2/go-i2c"
+	"EnvironmentSensor/hardware/bme280"
 )
 
 type SensorData struct {
@@ -109,28 +109,27 @@ func (p *Bme280Sensor) Notify(sensorData SensorData) {
 
 func (m *Bme280Sensor) Start() {
 
-	sensorAddress, err := strconv.ParseInt(os.Getenv("ENVSENSOR_BME280_ADDRESS"), 0, 16)
-	if err != nil {
-		fmt.Println("Error parsing string to bool:", err)
+	sensorAddress, parseErr := strconv.ParseInt(os.Getenv("ENVSENSOR_BME280_ADDRESS"), 0, 16)
+	if parseErr != nil {
+		fmt.Println("Error parsing string to bool:", parseErr)
 	}
 
 	// Create a new I2C connection
-	i2c, err := i2c.NewI2C(bme280.Address, 1) // 1 is the I2C bus number
-	if err != nil {
-		log.Fatalf("Failed to create I2C connection: %v", err)
+	var connection, connErr = smbus.Open(1, uint8(sensorAddress))
+	if connErr != nil {
+		log.Fatalf("Failed to create I2C connection: %v", connErr)
 	}
-	defer i2c.Close()
 
 	// Create a new BME280 instance
-	bme, err := bme280.New(i2c)
-	if err != nil {
-		log.Fatalf("Failed to create BME280 instance: %v", err)
+	sensor, bmeErr := bme280.Open(connection, 1, bme280.OpSample16)
+	if bmeErr != nil {
+		log.Fatalf("Failed to create BME280 instance: %v", bmeErr)
 	}
 
 	// Read data from the sensor
 	for {
-		// Read temperature, pressure, and humidity
-		temperature, pressure, humidity, err := bme.ReadAll()
+		humidity, pressure, temperature, err := sensor.Sample()
+
 		if err != nil {
 			log.Printf("Failed to read from BME280: %v", err)
 			time.Sleep(2 * time.Second)

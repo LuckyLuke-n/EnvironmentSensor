@@ -42,19 +42,17 @@ func main() {
 		fmt.Println("Error parsing string to bool:", err)
 	}
 
-	if useMock{
+	if useMock {
 		fmt.Println("Starting the mocked sensor...")
 		bme := sensor.SensorMock{}
-		bme.Subscribe(Callback)	
+		bme.Subscribe(Callback)
 		bme.Start()
-	}
-	else{
+	} else {
 		fmt.Println("Starting the bme280 sensor...")
-		bme := sensor.Sensor{}
-		bme.Subscribe(Callback)	
+		bme := sensor.Bme280Sensor{}
+		bme.Subscribe(Callback)
 		bme.Start()
 	}
-
 }
 
 func Callback(data sensor.SensorData) {
