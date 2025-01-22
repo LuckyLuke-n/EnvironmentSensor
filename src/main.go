@@ -4,6 +4,8 @@ import (
 	"EnvironmentSensor/communication"
 	"EnvironmentSensor/sensor"
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 )
 
@@ -35,11 +37,24 @@ func main() {
 	mqttHandler.Connect(mqttConfig.UseTls)
 
 	// start sensor
-	fmt.Println("Starting the sensor...")
-	bme := sensor.SensorMock{}
-	bme.Subscribe(Callback)
+	useMock, err := strconv.ParseBool(os.Getenv("USE_MOCK"))
+	if err != nil {
+		fmt.Println("Error parsing string to bool:", err)
+	}
 
-	bme.Start()
+	if useMock{
+		fmt.Println("Starting the mocked sensor...")
+		bme := sensor.SensorMock{}
+		bme.Subscribe(Callback)	
+		bme.Start()
+	}
+	else{
+		fmt.Println("Starting the bme280 sensor...")
+		bme := sensor.Sensor{}
+		bme.Subscribe(Callback)	
+		bme.Start()
+	}
+
 }
 
 func Callback(data sensor.SensorData) {
