@@ -120,7 +120,7 @@ func (m *Bme280Sensor) Start() {
 	}
 
 	// Create a new BME280 instance
-	sensor, bmeErr := bme280.Open(connection, 1, bme280.OpSample16)
+	sensor, bmeErr := bme280.Open(connection, 1, bme280.OpSample1)
 	if bmeErr != nil {
 		log.Fatalf("Failed to create BME280 instance: %v", bmeErr)
 	}
