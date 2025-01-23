@@ -8,7 +8,6 @@ import (
 	"math"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"time"
 
@@ -109,13 +108,13 @@ func (p *Bme280Sensor) Notify(sensorData SensorData) {
 
 func (m *Bme280Sensor) Start() {
 
-	sensorAddress, parseErr := strconv.ParseInt(os.Getenv("ENVSENSOR_BME280_ADDRESS"), 0, 16)
-	if parseErr != nil {
-		fmt.Println("Error parsing string to bool:", parseErr)
-	}
+	// sensorAddress, parseErr := strconv.ParseInt(os.Getenv("ENVSENSOR_BME280_ADDRESS"), 0, 16)
+	// if parseErr != nil {
+	// 	fmt.Println("Error parsing string to bool:", parseErr)
+	// }
 
 	// Create a new I2C connection
-	var connection, connErr = smbus.Open(1, uint8(sensorAddress))
+	var connection, connErr = smbus.Open(1, 0x77)
 	if connErr != nil {
 		log.Fatalf("Failed to create I2C connection: %v", connErr)
 	}
