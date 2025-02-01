@@ -16,6 +16,7 @@ MQTT_PORT = int(environment["mqtt_port"])
 MQTT_USER = environment["mqtt_user"]
 MQTT_PASSWORD = environment["mqtt_password"]
 MQTT_TOPIC = socket.gethostname().lower() + "/environmentsensor"
+MQTT_TLS = environment["mqtt_tls"]
 SENSOR_ADDRESS = int(environment["sensor_address"], 16)
 
 if IS_MOCKED == "True":
@@ -46,7 +47,7 @@ class Observer:
 
     def __init__(self):
         client_id = socket.gethostname() + "-"  + str(uuid.uuid4())
-        self._publisher = MqttPublisher(MQTT_HOST, MQTT_PORT, MQTT_TOPIC )
+        self._publisher = MqttPublisher(MQTT_HOST, MQTT_PORT, MQTT_TOPIC, MQTT_TLS )
         self._publisher.connect(client_id, MQTT_USER, MQTT_PASSWORD)
 
     def update(self, data: dict):
