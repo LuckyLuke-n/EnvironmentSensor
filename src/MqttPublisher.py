@@ -7,10 +7,11 @@ MAX_RECONNECT_DELAY = 60
 
 class MqttPublisher:
 
-    def __init__(self, host: str, port: int, topic: str ):
+    def __init__(self, host: str, port: int, topic: str, use_tls: bool ):
         self.broker = host
         self.port = port
         self.topic = topic
+        self.use_tls = use_tls
         self._graceful_disconnect = False
     
     def connect(self, client_id: str, username: str, password: str):
@@ -26,7 +27,10 @@ class MqttPublisher:
         self.client = mqtt_client.Client()
         self.client.user_data_set(self.unacked_publish)
         self.client.username_pw_set(username, password)
-        # self.client.tls_set()
+
+        if self.use_tls:
+            self.client.tls_set()
+            
         self.client.on_connect = on_connect
         self.client.connect(self.broker, self.port)
 
