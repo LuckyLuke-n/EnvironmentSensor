@@ -1,4 +1,5 @@
 import time
+import random
 from datetime import datetime
 
 class Bme280Mock:
@@ -22,9 +23,9 @@ class Bme280Mock:
         while not self._stopping_token_thrown:
             try:
                 # Extract temperature, pressure, and humidity
-                temperature_celsius = 22.55321
-                pressure = 1000.927212
-                humidity = 44.14234235
+                temperature_celsius = random.uniform(15, 25)
+                pressure = random.uniform(990, 1000)
+                humidity = random.uniform(40, 60)
 
                 # Print the readings
                 # print("Temperature: {:.2f} °C".format(temperature_celsius))
