@@ -28,7 +28,7 @@ class MqttPublisher:
         self.client.user_data_set(self.unacked_publish)
         self.client.username_pw_set(username, password)
 
-        if self.use_tls:
+        if self.use_tls == "True":
             self.client.tls_set()
             
         self.client.on_connect = on_connect
