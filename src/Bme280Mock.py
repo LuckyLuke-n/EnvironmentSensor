@@ -1,4 +1,5 @@
 import time
+import socket
 import random
 from datetime import datetime
 
@@ -37,7 +38,8 @@ class Bme280Mock:
                         "timestamp": str(datetime.utcnow()),
                         "temperature": round(temperature_celsius, 2),
                         "pressure": round(pressure, 2),
-                        "humidity": round(humidity, 2)
+                        "humidity": round(humidity, 2),
+                        "hostname": socket.gethostname().lower()
                     }
                     observer.update(data)
 

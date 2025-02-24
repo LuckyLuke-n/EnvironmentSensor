@@ -1,4 +1,5 @@
 import time
+import socket
 # import fcntl
 import smbus2
 import bme280
@@ -45,7 +46,8 @@ class Bme280Wrapper:
                         "timestamp": str(datetime.utcnow()),
                         "temperature": round(temperature_celsius, 2),
                         "pressure": round(pressure, 2),
-                        "humidity": round(humidity, 2)
+                        "humidity": round(humidity, 2),
+                        "hostname": socket.gethostname().lower()
                     }
                     observer.update(data)
 

@@ -15,7 +15,7 @@ MQTT_HOST = environment["mqtt_host"]
 MQTT_PORT = int(environment["mqtt_port"])
 MQTT_USER = environment["mqtt_user"]
 MQTT_PASSWORD = environment["mqtt_password"]
-MQTT_TOPIC = socket.gethostname().lower() + "/environmentsensor"
+MQTT_TOPIC = "environmentsensor"
 MQTT_TLS = environment["mqtt_tls"]
 SENSOR_ADDRESS = int(environment["sensor_address"], 16)
 
