@@ -18,6 +18,7 @@ MQTT_PASSWORD = environment["mqtt_password"]
 MQTT_TOPIC = "environmentsensor"
 MQTT_TLS = environment["mqtt_tls"]
 SENSOR_ADDRESS = int(environment["sensor_address"], 16)
+LOCATION_TAG = environment["location_tag"]
 
 if IS_MOCKED == "True":
     print("Starting mock")
@@ -31,9 +32,9 @@ def main():
     observer = Observer()
     try:
         if IS_MOCKED == "True":
-            sensor = Bme280Mock(SENSOR_ADDRESS)
+            sensor = Bme280Mock(SENSOR_ADDRESS, LOCATION_TAG)
         else:
-            sensor = Bme280Wrapper(SENSOR_ADDRESS)
+            sensor = Bme280Wrapper(SENSOR_ADDRESS, LOCATION_TAG)
 
         sensor.attach(observer)
         sensor.start_driver()

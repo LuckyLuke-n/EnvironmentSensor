@@ -5,10 +5,11 @@ from datetime import datetime
 
 class Bme280Mock:
 
-    def __init__(self, sensor_address: int):
+    def __init__(self, sensor_address: int, location_tag: str):
         self.sensor_address = sensor_address
         self._stopping_token_thrown = False
         self._observers = []
+        self.location_tag = location_tag
     
     def attach(self, observer):
         self._observers.append(observer)
@@ -39,7 +40,9 @@ class Bme280Mock:
                         "temperature": round(temperature_celsius, 2),
                         "pressure": round(pressure, 2),
                         "humidity": round(humidity, 2),
-                        "hostname": socket.gethostname().lower()
+                        "hostname": socket.gethostname().lower(),
+                        "location": self.location_tag,
+                        "sensor": "bme280"
                     }
                     observer.update(data)
 
