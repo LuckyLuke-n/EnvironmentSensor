@@ -74,7 +74,7 @@ After=network.target
 [Service]
 Type=simple
 User=usr
-WorkingDirectory=/home/usr/Sources/Tempsensor
+WorkingDirectory=/home/usr/Sources/EnvironmentSensor
 ExecStart=/bin/bash -c 'source tempsensorenv/bin/activate && python3 src/envsensor.py'
 Restart=always
 RestartSec=10
