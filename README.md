@@ -64,6 +64,31 @@ That is the number you will put in the launch_settings/env.json for sensor addre
 }
 ```
 
+#### Startup
+Create file /etc/systemd/system/tempsensor.service
+```
+[Unit]
+Description=Temperature Sensor Service
+After=network.target
+
+[Service]
+Type=simple
+User=usr
+WorkingDirectory=/home/usr/Sources/Tempsensor
+ExecStart=/bin/bash -c 'source tempsensorenv/bin/activate && python3 src/envsensor.py'
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+Then run
+```
+sudo systemctl daemon-reload
+sudo systemctl enable tempsensor.service
+sudo systemctl start tempsensor.service
+```
+
 ## Acknowledgments
 Thanks to the developers of the BME280 sensor for providing accurate environmental data.
 Special thanks to the open-source community for their contributions and support.
