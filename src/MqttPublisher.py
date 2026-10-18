@@ -1,4 +1,5 @@
 from paho.mqtt import client as mqtt_client
+import ssl
 
 FIRST_RECONNECT_DELAY = 1
 RECONNECT_RATE = 2
@@ -29,7 +30,7 @@ class MqttPublisher:
         self.client.username_pw_set(username, password)
 
         if self.use_tls == "True":
-            self.client.tls_set()
+            self.client.tls_set(ca_certs=None, certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS, ciphers=None)
             
         self.client.on_connect = on_connect
         self.client.connect(self.broker, self.port)
